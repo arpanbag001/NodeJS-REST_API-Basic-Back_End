@@ -24,7 +24,7 @@ app.use((error, req, res, next) => {
     console.log(error);
     const statusCode = error.statusCode || 500; //Use status code 500 if status code is not set
     const errorMessage = error.message;
-    res.status(statusCode).json(errorMessage);
+    res.status(statusCode).json({ message: errorMessage });
 });
 
 mongoose.connect("mongodb+srv://arpan:arpanbag12@cluster0-o4or2.mongodb.net/social?retryWrites=true&w=majority")
