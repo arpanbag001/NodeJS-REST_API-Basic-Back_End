@@ -22,7 +22,7 @@ app.use("/feed", feedRoutes);
 //For error handling
 app.use((error, req, res, next) => {
     console.log(error);
-    const statusCode = error.statusCode;
+    const statusCode = error.statusCode || 500; //Use status code 500 if status code is not set
     const errorMessage = error.message;
     res.status(statusCode).json(errorMessage);
 });
