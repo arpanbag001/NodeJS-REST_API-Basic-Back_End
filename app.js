@@ -27,7 +27,7 @@ app.use((error, req, res, next) => {
     res.status(statusCode).json({ message: errorMessage });
 });
 
-mongoose.connect("mongodb+srv://arpan:arpanbag12@cluster0-o4or2.mongodb.net/social?retryWrites=true&w=majority")
+mongoose.connect("mongodb://localhost/social")
     .then(
         app.listen(8080, () => { console.log("Listening at port 8080") })
     )
