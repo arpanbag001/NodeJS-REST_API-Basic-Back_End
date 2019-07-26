@@ -16,7 +16,16 @@ app.use((req, res, next) => {
     next();
 });
 
+//For feeds
 app.use("/feed", feedRoutes);
+
+//For error handling
+app.use((error, req, res, next) => {
+    console.log(error);
+    const statusCode = error.statusCode;
+    const errorMessage = error.message;
+    res.status(statusCode).json(errorMessage);
+});
 
 mongoose.connect("mongodb+srv://arpan:arpanbag12@cluster0-o4or2.mongodb.net/social?retryWrites=true&w=majority")
     .then(
