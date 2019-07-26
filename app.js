@@ -31,7 +31,7 @@ app.use((error, req, res, next) => {
     res.status(statusCode).json({ message: errorMessage });
 });
 
-mongoose.connect("mongodb://localhost/social")
+mongoose.connect("mongodb://localhost/social", { useNewUrlParser: true })
     .then(
         app.listen(8080, () => { console.log("Listening at port 8080") })
     )
