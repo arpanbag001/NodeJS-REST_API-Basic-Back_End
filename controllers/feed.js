@@ -1,3 +1,6 @@
+const fileSystem = require("fs");
+const path = require("path");
+
 const { validationResult } = require("express-validator");
 
 const Post = require("../models/post");
@@ -69,3 +72,54 @@ exports.getPost = (req, res, next) => {
             next(err);
         });
 }
+
+exports.updatePost = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error("Validation failed, entered data is incorrect!");
+        error.statusCode = 422;
+        throw error;
+    }
+    const postId = req.params.postId;
+    const title = req.body.title;
+    const content = req.body.content;
+    let imageUrl = req.body.image;   //Set the old image URL
+    if (req.file)   //If a new image was selected
+        imageUrl = req.file.path;   //Use the URL of the new image
+    if (!imageUrl) {   //If still no file was found
+        const error = new Error("No image is selected!");
+        error.statusCode = 422;
+        throw error;
+    }
+    Post.findById(postId)
+        .then(post => { //Database connection successful
+            if (!post) {    //Could not find post
+                const error = new Error("Could not find post.");
+                error.statusCode = 404;
+                throw error;
+            }
+
+            if (imageUrl !== post.imageUrl)    //A new file is uploaded
+                clearImage(post.imageUrl);  //Delete the old (outdated) image
+
+            post.title = title;
+            post.content = content;
+            post.imageUrl = imageUrl;
+            return post.save();
+        })
+        .then(result => {   //Post saved (updated) successfully
+            res.status(200).json({ message: "Post updated!", post: result });
+        })
+        .catch(err => { //Database connection failed
+            console.log(err)
+            if (!err.statusCode)
+                err.statusCode = 500;
+            next(err);
+        });
+}
+
+//Function to clear the old image
+const clearImage = filePath => {
+    path.join(__dirname, "..", filePath);
+    fileSystem.unlink(filePath), err => console.log(err);
+};

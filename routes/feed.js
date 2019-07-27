@@ -5,12 +5,22 @@ const feedController = require("../controllers/feed");
 
 const router = express.Router();
 
+//For fetching all posts
 router.get("/posts", feedController.getPosts);
+
+//For creating a post
 router.post("/post", [
     body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 })
 ], feedController.createPost);
 
-router.get("/post/:postId",feedController.getPost);
+//For fetching a particular post
+router.get("/post/:postId", feedController.getPost);
+
+//For editing a particular post
+router.put("/post/:postId", [
+    body("title").trim().isLength({ min: 5 }),
+    body("content").trim().isLength({ min: 5 })
+], feedController.updatePost);
 
 module.exports = router;
