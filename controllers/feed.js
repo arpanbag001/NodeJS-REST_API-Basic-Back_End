@@ -118,8 +118,33 @@ exports.updatePost = (req, res, next) => {
         });
 }
 
+exports.deletePost = (req, res, next) => {
+    const postId = req.params.postId;
+    Post.findById(postId)
+        .then(post => {
+            if (!post) {    //Could not find post
+                const error = new Error("Could not find post.");
+                error.statusCode = 404;
+                throw error;
+            }
+            //Check if the user is the creator of the post
+            //Delete the image
+            clearImage(post.imageUrl);
+            return Post.findByIdAndRemove(postId);
+        })
+        .then(result => {
+            res.status(200).json({ message: "Post deleted successfully!" });
+        })
+        .catch(err => { //Database connection failed
+            console.log(err)
+            if (!err.statusCode)
+                err.statusCode = 500;
+            next(err);
+        });
+}
+
 //Function to clear the old image
 const clearImage = filePath => {
     path.join(__dirname, "..", filePath);
-    fileSystem.unlink(filePath), err => console.log(err);
+    fileSystem.unlink(filePath, err => console.log(err));
 };
