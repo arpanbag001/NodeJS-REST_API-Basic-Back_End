@@ -7,6 +7,7 @@ const multer = require("multer");
 
 
 const feedRoutes = require("./routes/feed");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -38,6 +39,9 @@ app.use((req, res, next) => {
     next();
 });
 
+//For authentication management
+app.use("/auth", authRoutes);
+
 //For feeds
 app.use("/feed", feedRoutes);
 
@@ -46,7 +50,8 @@ app.use((error, req, res, next) => {
     console.log(error);
     const statusCode = error.statusCode || 500; //Use status code 500 if status code is not set
     const errorMessage = error.message;
-    res.status(statusCode).json({ message: errorMessage });
+    const data = error.data;
+    res.status(statusCode).json({ message: errorMessage, data: data });
 });
 
 mongoose.connect("mongodb://localhost/social", { useNewUrlParser: true })
