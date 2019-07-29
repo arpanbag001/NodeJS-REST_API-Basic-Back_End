@@ -57,7 +57,7 @@ app.use((error, req, res, next) => {
 mongoose.connect("mongodb://localhost/social", { useNewUrlParser: true })
     .then(result => {
         const server = app.listen(8080, () => { console.log("Listening at port 8080") });
-        const socketIO = require("socket.io")(server);
+        const socketIO = require("./socket").init(server);
         socketIO.on("connection", socket => {
             console.log("Client connected!");
         });
