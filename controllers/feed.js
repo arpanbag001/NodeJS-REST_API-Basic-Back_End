@@ -157,6 +157,7 @@ exports.deletePost = async (req, res, next) => {
         const user = await User.findById(req.userId);
         user.posts.pull(postId);
         await user.save();
+        socketIO.getSocketIO().emit("posts", { action: "delete", post: postId });
         res.status(200).json({ message: "Post deleted successfully!" });
 
     } catch (err) { //Database connection failed
