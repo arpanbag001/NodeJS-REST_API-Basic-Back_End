@@ -12,7 +12,7 @@ exports.getPosts = async (req, res, next) => {
     const postPerPage = 2;
     try {
         const totalItems = await Post.find().countDocuments()
-        const posts = await Post.find().populate("creator").skip((currentPage - 1) * postPerPage).limit(postPerPage);
+        const posts = await Post.find().populate("creator").sort({ createdAt: -1 }).skip((currentPage - 1) * postPerPage).limit(postPerPage);
 
         res.status(200).json({ message: "Feteched posts successfully.", posts: posts, totalItems: totalItems });
     }
