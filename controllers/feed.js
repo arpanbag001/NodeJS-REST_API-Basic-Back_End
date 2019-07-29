@@ -50,7 +50,7 @@ exports.createPost = async (req, res, next) => {
         const user = await User.findById(req.userId);
         user.posts.push(post);
         await user.save();
-        socketIO.getSocketIO().emit("posts", { action: "create", post: { ...post._doc, creator: { _id: userId, name: user.name } } });
+        socketIO.getSocketIO().emit("posts", { action: "create", post: { ...post._doc, creator: { _id: user._id, name: user.name } } });
         res.status(201).json({
             message: "Post created successfully!",
             post: post,
